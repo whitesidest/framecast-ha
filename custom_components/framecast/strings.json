@@ -1,0 +1,20 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Connect to FrameCast",
+        "data": {
+          "url": "FrameCast URL",
+          "api_key": "API key"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Failed to connect to FrameCast.",
+      "invalid_auth": "Invalid API key."
+    },
+    "abort": {
+      "already_configured": "This FrameCast instance is already configured."
+    }
+  }
+}

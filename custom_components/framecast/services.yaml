@@ -1,0 +1,42 @@
+send_image:
+  name: Send image
+  description: Push a specific image to a Frame TV immediately.
+  fields:
+    device_id:
+      name: Device ID
+      description: FrameTV UUID (from /api/v1/devices/).
+      required: true
+      example: "f4c3b8a0-1234-5678-9abc-def012345678"
+      selector:
+        text:
+    image_id:
+      name: Image ID
+      description: SourceImage primary key.
+      required: true
+      example: 42
+      selector:
+        number:
+          mode: box
+
+wake_device:
+  name: Wake device
+  description: Wake a Frame TV from sleep.
+  fields:
+    device_id:
+      name: Device ID
+      required: true
+      example: "f4c3b8a0-1234-5678-9abc-def012345678"
+      selector:
+        text:
+
+trigger_rule:
+  name: Trigger rule
+  description: Fire a ContentRule (alternative to per-rule button entities).
+  fields:
+    rule_id:
+      name: Rule ID
+      required: true
+      example: 7
+      selector:
+        number:
+          mode: box

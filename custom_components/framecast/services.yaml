@@ -29,6 +29,17 @@ wake_device:
       selector:
         text:
 
+sleep_device:
+  name: Sleep device
+  description: Put a Frame TV into Art Mode (its rest state).
+  fields:
+    device_id:
+      name: Device ID
+      required: true
+      example: "f4c3b8a0-1234-5678-9abc-def012345678"
+      selector:
+        text:
+
 trigger_rule:
   name: Trigger rule
   description: Fire a ContentRule (alternative to per-rule button entities).

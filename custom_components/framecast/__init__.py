@@ -19,6 +19,7 @@ from .const import (
     DOMAIN,
     PLATFORMS,
     SERVICE_SEND_IMAGE,
+    SERVICE_SLEEP_DEVICE,
     SERVICE_TRIGGER_RULE,
     SERVICE_WAKE_DEVICE,
 )
@@ -33,6 +34,7 @@ SEND_IMAGE_SCHEMA = vol.Schema(
     }
 )
 WAKE_SCHEMA = vol.Schema({vol.Required(ATTR_DEVICE_ID): cv.string})
+SLEEP_SCHEMA = vol.Schema({vol.Required(ATTR_DEVICE_ID): cv.string})
 TRIGGER_RULE_SCHEMA = vol.Schema({vol.Required(ATTR_RULE_ID): vol.Coerce(int)})
 
 
@@ -51,11 +53,15 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     async def _wake(call: ServiceCall) -> None:
         await client.wake_device(call.data[ATTR_DEVICE_ID])
 
+    async def _sleep(call: ServiceCall) -> None:
+        await client.sleep_device(call.data[ATTR_DEVICE_ID])
+
     async def _trigger_rule(call: ServiceCall) -> None:
         await client.trigger_rule(call.data[ATTR_RULE_ID])
 
     hass.services.async_register(DOMAIN, SERVICE_SEND_IMAGE, _send_image, schema=SEND_IMAGE_SCHEMA)
     hass.services.async_register(DOMAIN, SERVICE_WAKE_DEVICE, _wake, schema=WAKE_SCHEMA)
+    hass.services.async_register(DOMAIN, SERVICE_SLEEP_DEVICE, _sleep, schema=SLEEP_SCHEMA)
     hass.services.async_register(DOMAIN, SERVICE_TRIGGER_RULE, _trigger_rule, schema=TRIGGER_RULE_SCHEMA)
 
     return True
@@ -66,6 +72,6 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     if unload_ok:
         hass.data[DOMAIN].pop(entry.entry_id)
         if not hass.data[DOMAIN]:
-            for svc in (SERVICE_SEND_IMAGE, SERVICE_WAKE_DEVICE, SERVICE_TRIGGER_RULE):
+            for svc in (SERVICE_SEND_IMAGE, SERVICE_WAKE_DEVICE, SERVICE_SLEEP_DEVICE, SERVICE_TRIGGER_RULE):
                 hass.services.async_remove(DOMAIN, svc)
     return unload_ok

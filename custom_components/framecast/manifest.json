@@ -1,7 +1,7 @@
 {
   "domain": "framecast",
   "name": "FrameCast",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "documentation": "https://github.com/whitesidest/framecast-ha",
   "issue_tracker": "https://github.com/whitesidest/framecast-ha/issues",
   "codeowners": ["@whitesidest"],

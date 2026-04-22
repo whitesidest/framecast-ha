@@ -15,4 +15,5 @@ ATTR_RULE_ID = "rule_id"
 
 SERVICE_SEND_IMAGE = "send_image"
 SERVICE_WAKE_DEVICE = "wake_device"
+SERVICE_SLEEP_DEVICE = "sleep_device"
 SERVICE_TRIGGER_RULE = "trigger_rule"

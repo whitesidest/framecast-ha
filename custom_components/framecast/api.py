@@ -62,6 +62,9 @@ class FrameCastClient:
     async def wake_device(self, device_id: str) -> dict[str, Any]:
         return await self._request("POST", f"/api/v1/devices/{device_id}/wake/")
 
+    async def sleep_device(self, device_id: str) -> dict[str, Any]:
+        return await self._request("POST", f"/api/v1/devices/{device_id}/sleep/")
+
     async def trigger_rule(self, rule_id: int, payload: dict | None = None) -> dict[str, Any]:
         return await self._request(
             "POST", f"/api/v1/rules/{rule_id}/trigger/", json=payload or {}

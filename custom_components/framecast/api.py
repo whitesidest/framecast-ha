@@ -40,17 +40,26 @@ class FrameCastClient:
         except aiohttp.ClientError as err:
             raise FrameCastApiError(str(err)) from err
 
-    async def list_devices(self) -> list[dict[str, Any]]:
-        data = await self._request("GET", "/api/v1/devices/")
+    async def _paginated(self, path: str) -> list[dict[str, Any]]:
+        data = await self._request("GET", path)
         return data.get("results", data) if isinstance(data, dict) else data
+
+    async def list_devices(self) -> list[dict[str, Any]]:
+        return await self._paginated("/api/v1/devices/")
 
     async def list_rules(self) -> list[dict[str, Any]]:
-        data = await self._request("GET", "/api/v1/rules/")
-        return data.get("results", data) if isinstance(data, dict) else data
+        return await self._paginated("/api/v1/rules/")
 
     async def list_announcements(self) -> list[dict[str, Any]]:
-        data = await self._request("GET", "/api/v1/announcements/")
-        return data.get("results", data) if isinstance(data, dict) else data
+        return await self._paginated("/api/v1/announcements/")
+
+    async def list_companions(self) -> list[dict[str, Any]]:
+        return await self._paginated("/api/v1/companions/")
+
+    async def get_current_image(self, device_id: str) -> dict[str, Any] | None:
+        """Latest delivered image + art metadata for a Frame, or None."""
+        data = await self._request("GET", f"/api/v1/devices/{device_id}/current_image/")
+        return data.get("image") if isinstance(data, dict) else None
 
     async def push_image(self, device_id: str, image_id: int) -> dict[str, Any]:
         return await self._request(
@@ -64,6 +73,12 @@ class FrameCastClient:
 
     async def sleep_device(self, device_id: str) -> dict[str, Any]:
         return await self._request("POST", f"/api/v1/devices/{device_id}/sleep/")
+
+    async def poll_device(self, device_id: str) -> dict[str, Any]:
+        return await self._request("POST", f"/api/v1/devices/{device_id}/poll/")
+
+    async def sync_source(self, source_id: int) -> dict[str, Any]:
+        return await self._request("POST", f"/api/v1/sources/{source_id}/sync/")
 
     async def trigger_rule(self, rule_id: int, payload: dict | None = None) -> dict[str, Any]:
         return await self._request(

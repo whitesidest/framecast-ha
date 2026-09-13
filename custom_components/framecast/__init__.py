@@ -4,6 +4,7 @@ from __future__ import annotations
 import logging
 import uuid
 from collections.abc import Awaitable, Callable
+from datetime import timedelta
 
 import voluptuous as vol
 from homeassistant.config_entries import ConfigEntry
@@ -30,6 +31,7 @@ from .const import (
     SERVICE_TRIGGER_RULE,
     SERVICE_WAKE_DEVICE,
 )
+from .const import CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL_S
 from .coordinator import FrameCastCoordinator
 
 _LOGGER = logging.getLogger(__name__)
@@ -172,11 +174,14 @@ async def _fan_out(
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     session = async_get_clientsession(hass)
     client = FrameCastClient(session, entry.data[CONF_URL], entry.data[CONF_API_KEY])
-    coordinator = FrameCastCoordinator(hass, client)
+    interval_s = int(entry.options.get(CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL_S))
+    coordinator = FrameCastCoordinator(hass, client, update_interval=timedelta(seconds=interval_s))
     await coordinator.async_config_entry_first_refresh()
 
     hass.data.setdefault(DOMAIN, {})[entry.entry_id] = coordinator
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
+    # A changed poll interval takes effect by reloading the entry.
+    entry.async_on_unload(entry.add_update_listener(_async_options_updated))
 
     async def _send_image(call: ServiceCall) -> None:
         image_id = call.data[ATTR_IMAGE_ID]
@@ -217,6 +222,10 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     hass.services.async_register(DOMAIN, SERVICE_SYNC_SOURCE, _sync_source, schema=SYNC_SOURCE_SCHEMA)
 
     return True
+
+
+async def _async_options_updated(hass: HomeAssistant, entry: ConfigEntry) -> None:
+    await hass.config_entries.async_reload(entry.entry_id)
 
 
 async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:

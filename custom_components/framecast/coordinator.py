@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import logging
+from datetime import timedelta
 from typing import Any
 
 from homeassistant.core import HomeAssistant
@@ -14,12 +15,17 @@ _LOGGER = logging.getLogger(__name__)
 
 
 class FrameCastCoordinator(DataUpdateCoordinator[dict[str, Any]]):
-    def __init__(self, hass: HomeAssistant, client: FrameCastClient) -> None:
+    def __init__(
+        self,
+        hass: HomeAssistant,
+        client: FrameCastClient,
+        update_interval: timedelta = DEFAULT_SCAN_INTERVAL,
+    ) -> None:
         super().__init__(
             hass,
             _LOGGER,
             name=DOMAIN,
-            update_interval=DEFAULT_SCAN_INTERVAL,
+            update_interval=update_interval,
         )
         self.client = client
 

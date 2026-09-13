@@ -16,5 +16,16 @@
     "abort": {
       "already_configured": "This FrameCast instance is already configured."
     }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "FrameCast polling",
+        "description": "How often to ask FrameCast what each frame is showing. Automations that react to the art changing wait on this poll: 60 s means up to a minute between the push and the reaction; 5–10 s makes it feel immediate on a home network.",
+        "data": {
+          "scan_interval": "Poll interval (seconds)"
+        }
+      }
+    }
   }
 }

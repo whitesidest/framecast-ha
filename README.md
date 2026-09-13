@@ -76,4 +76,14 @@ automation:
 
 ## Polling
 
-Devices, rules, and announcements are refreshed every 60 seconds.
+Devices, rules, announcements, companions and each frame's current image are
+refreshed on one poll. The interval is an option on the integration
+(Settings → Devices & services → FrameCast → Configure): **60 s by default**,
+5–600 s allowed.
+
+Set it short if an automation reacts to the art changing. A `state` trigger
+on a frame sensor's `current_title` fires on the poll that first sees the new
+piece, so at 60 s the reaction lands 0–60 s (average 30 s) after the push —
+while FrameCast's own push, the trigger and whatever it drives each take well
+under a second. At 5 s the same automation feels immediate; on a home network
+the extra polls cost nothing noticeable.
